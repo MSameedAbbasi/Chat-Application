@@ -42,9 +42,9 @@
             // 
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox1.Font = new System.Drawing.Font("Mongolian Baiti", 12.25F);
-            this.textBox1.Location = new System.Drawing.Point(181, 3);
+            this.textBox1.Location = new System.Drawing.Point(180, 3);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(311, 26);
+            this.textBox1.Size = new System.Drawing.Size(312, 26);
             this.textBox1.TabIndex = 0;
             // 
             // label1
@@ -56,7 +56,7 @@
             this.label1.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.label1.Location = new System.Drawing.Point(3, 38);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(172, 38);
+            this.label1.Size = new System.Drawing.Size(171, 38);
             this.label1.TabIndex = 14;
             this.label1.Text = "Password";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -71,7 +71,7 @@
             this.label2.ForeColor = System.Drawing.Color.WhiteSmoke;
             this.label2.Location = new System.Drawing.Point(3, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(172, 38);
+            this.label2.Size = new System.Drawing.Size(171, 38);
             this.label2.TabIndex = 15;
             this.label2.Text = "Name";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -112,10 +112,10 @@
             // 
             this.textBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox2.Font = new System.Drawing.Font("Mongolian Baiti", 12.25F);
-            this.textBox2.Location = new System.Drawing.Point(181, 41);
+            this.textBox2.Location = new System.Drawing.Point(180, 41);
             this.textBox2.Name = "textBox2";
             this.textBox2.PasswordChar = '*';
-            this.textBox2.Size = new System.Drawing.Size(311, 26);
+            this.textBox2.Size = new System.Drawing.Size(312, 26);
             this.textBox2.TabIndex = 1;
             // 
             // tableLayoutPanel1

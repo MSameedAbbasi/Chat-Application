@@ -46,7 +46,7 @@ namespace chatproj
             {
                 client.username = "Sameed";
                 users.Add(textBox1.Text);
-                Form1 form1 = new Form1();
+                server_form form1 = new server_form();
                 form1.Show();
                 this.Hide();
                 
@@ -96,7 +96,7 @@ namespace chatproj
                 if (cmd.ExecuteScalar().ToString() == "1")
                 {
 
-                    Form1 form1 = new Form1();
+                    server_form form1 = new server_form();
                     form1.Show();
                     this.Close();
                 }
