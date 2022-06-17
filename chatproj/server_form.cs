@@ -107,6 +107,7 @@ namespace chatproj
                     {
                         
                         data = Encoding.ASCII.GetString(bytes, 0, i);
+                        data.TrimEnd('\n','\r');
                         Console.WriteLine("server got>>" + data);
                         var tempreturn2 = chkusername(data, client);
                         data = tempreturn2.Item1;
@@ -155,7 +156,7 @@ namespace chatproj
             Console.WriteLine("client to client" + sendto + "<<msg>>" + clientmessage + "<<sender>>" + sender);
             foreach (string name in clientnamelist)
             {
-                Console.WriteLine("client list is " + name + name.Length + "<<"+name.TrimEnd('\n').Length);
+                Console.WriteLine("client list is " + name +"<len"+ name.Length + "<<"+name.TrimEnd('\n').Length);
             }
             if (clientnamelist.Contains(sendto))
             {
@@ -209,9 +210,17 @@ namespace chatproj
             if (gotstr.Substring(0,5)== "&$##*" )
             {
                 sendername = gotstr.Substring(5);
-                clientlist.Add(client);
-                clientnamelist.Add(sendername.TrimEnd('\n','\r'));
-
+                sendername = sendername.TrimEnd('\n', '\r');
+                if (clientnamelist.Contains(sendername))
+                {
+                    clientlist[clientnamelist.IndexOf(sendername)]= client;
+                }
+                else
+                {
+                    //sendername = gotstr.Substring(5);
+                    clientlist.Add(client);
+                    clientnamelist.Add(sendername.TrimEnd('\n', '\r'));
+                }
                 gotstr = sendername + " connected ";
                 setdatagridview();
             }
