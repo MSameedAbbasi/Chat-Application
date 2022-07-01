@@ -10,13 +10,15 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using XQ_Client;
 namespace chatproj
 {
-    public partial class server_form : Form
+    public partial class server_form : Form, IOSClientRMLH
     {
         public static int usercount = 0;
         
+        private OSClientRMLH os_client;
+        private NetworkStream os_stream;
 
         public List<TcpClient> clientlist = new List<TcpClient>();
         private List<string> clientnamelist = new List<string>();
@@ -27,7 +29,7 @@ namespace chatproj
         private String data, data1 = null;
         private static IPAddress localAddr ;
         private TcpListener server;
-
+        string ip_port_ssl;
 
         public server_form()
         {
@@ -37,7 +39,7 @@ namespace chatproj
         private void Form1_Load(object sender, EventArgs e)
         {
             setdatagridview();
-
+            ip_port_ssl = "";
             //innitialize
             port = 12000;
             bytes = new Byte[256];
@@ -49,6 +51,52 @@ namespace chatproj
             Console.WriteLine("Waiting for a connection ... ");
             //serverig();
             serverig1();
+
+            string ordermsg = "";
+            //temp_order_sendto_ss(ordermsg);
+        }
+        
+        private void temp_order_sendto_ss(string ordermsg)
+        {
+            Console.WriteLine("sent to ss order><>>" );
+            string[] arr2 = ip_port_ssl.Split(',');
+
+            //IPAddress os_IP = IPAddress.Parse("192.168.0.122");
+            //IPAddress os_IP = IPAddress.Parse("204.93.141.72");
+            IPAddress os_IP = IPAddress.Parse(arr2[0]); 
+            string ssl = arr2[2];
+            //Int32 os_port = 3323;
+            Int32 os_port = Int32.Parse(arr2[1]);
+
+            /*string str = "8=EXX.1.0#35=B2#553=DEMO_MASTER#1070=master-user1#52=09:50:34-06282022#1=10749#55=FB" +
+                "#54=1#38=100#40=2#1010=DEMO_MASTER#1004=T#44=10.02000#59=0#31=10.02#132=9.99" +
+                "#133=10.02#1121=1002#1139=XNAS#1074=20220628.10#58=MOBILE_ORDER_SENDING_APP#";*/
+
+
+
+
+
+            /*os_client = new OSClientRMLH(null, this, os_IP.ToString(), os_port, ssl, "Heart_Beat_L2");
+            os_client.StartInitialization();
+            
+            os_client.write(ordermsg);*/
+
+
+
+
+
+            /*os_client = new TcpClient(os_IP.ToString(), os_port);
+            os_stream = os_client.GetStream();
+            
+                 //processing
+
+            StreamWriter writer = new StreamWriter(os_client.GetStream(), Encoding.ASCII);
+            writer.WriteLine(str);
+
+            Byte[] data = Encoding.ASCII.GetBytes(str);
+            os_stream.Write(data, 0, data.Length);*/
+
+            Console.WriteLine("Sent ORDER ----->{0}", ordermsg );
         }
 
         private void button2_Click(object sender, EventArgs e)   //send to one client
@@ -109,32 +157,35 @@ namespace chatproj
                         data = Encoding.ASCII.GetString(bytes, 0, i);
                         data.TrimEnd('\n','\r');
                         Console.WriteLine("server got>>" + data);
+                        //chk_order(data);
+
                         var tempreturn2 = chkusername(data, client);
                         data = tempreturn2.Item1;
                         sender = tempreturn2.Item2;
                         //(data, sendto) = rcvrname(data);
-
-
                         Console.WriteLine("server Received: {0}", data);
-                        var tempreturn = rcvrname(data);
-                        data = tempreturn.Item1;
-                        sendto = tempreturn.Item2;
+                        
+                            
+                            var tempreturn = rcvrname(data);
+                            data = tempreturn.Item1;
+                            sendto = tempreturn.Item2;
+
+
+                            sentclienttoclient(data, sendto, sender);
 
                         
-                        sentclienttoclient(data, sendto, sender);
+                            //processing on data
+                            //data = data.ToUpper();
+                            data1 = "ACKNOWLEDGE \n#";
+                            byte[] msg = Encoding.ASCII.GetBytes(client_list_string + "Server: " + data1);
+
+                            // Send back a response.
+                            stream.Write(msg, 0, msg.Length);
+                            Console.WriteLine("Sent by server: //{0}", client_list_string + "Server: " + data1);
 
 
-                        //processing on data
-                        //data = data.ToUpper();
-                        data1 =  "ACKNOWLEDGE \n#";
-                        byte[] msg = Encoding.ASCII.GetBytes(client_list_string + "Server: " + data1);
-
-                        // Send back a response.
-                        stream.Write(msg, 0, msg.Length);
-                        Console.WriteLine("Sent by server: //{0}", client_list_string + "Server: " + data1);
-                       
-
-                        SetTextBox(data);
+                            SetTextBox(data);
+                        
                     }
 
                     //client.Close();
@@ -150,6 +201,7 @@ namespace chatproj
             }
 
         }
+       
 
         private void sentclienttoclient(string clientmessage, string sendto, string sender)        ////// 
         {
@@ -184,10 +236,11 @@ namespace chatproj
 
         private Tuple<string, string > rcvrname(string gotstr)
         {
-            string sendto,st1 = "";
+            string st1 = "";
+            string sendto = "";
             string rcvrcode = "$%$";
-            Console.WriteLine("rcvr code" + gotstr.Substring(0, 3));
-            if (gotstr.Substring(0, 3) == rcvrcode)
+            Console.WriteLine("rcvr code");
+            if (gotstr.Length>3 && gotstr.Substring(0, 3) == rcvrcode)
             {
                 
                 sendto = gotstr.Substring(3, 10);
@@ -205,9 +258,16 @@ namespace chatproj
 
         private Tuple<string,string> chkusername(string gotstr,TcpClient client)
         {
-            string sendername="";
+            string sendername= "";
             
-            if (gotstr.Substring(0,5)== "&$##*" )
+            if (data.Contains("58=MOBILE_ORDER_SENDING_APP"))
+            {
+                string[] arr1= data.Split(new[] { "||" }, StringSplitOptions.None);
+                ip_port_ssl = arr1[1];
+                temp_order_sendto_ss(arr1[0]);
+                return Tuple.Create("","");
+            }
+            else if (gotstr.Substring(0,5)== "&$##*" )
             {
                 sendername = gotstr.Substring(5);
                 sendername = sendername.TrimEnd('\n', '\r');
@@ -259,12 +319,7 @@ namespace chatproj
 
             textBox2.Text = "";
         }           //broadcast
-        /* private void setdatagridview()
-         {
-
-             Setdatagridview();
-
-         }*/
+      
         private void setdatagridview()
         {
 
@@ -321,7 +376,50 @@ namespace chatproj
 
         }
 
-        
+        public void osClient_onMessage(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void osClient_OnConnectionError()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Login()
+        {
+            SetConStatus(true);
+
+        }
+        public delegate void SetConStatusDel(bool isConnected);
+        public void SetConStatus(bool isConnected)
+        {
+            try
+            {
+                if (InvokeRequired)
+                {
+                    BeginInvoke(new SetConStatusDel(SetConStatus), isConnected);
+                    return;
+                }
+                else
+                {
+                    //toolStripStatusLabelConnection.Text = "Orders: " + osClient.NoOfConnectionAttempt.ToString();
+                    if (isConnected)
+                    {
+                        ///toolStripStatusLabelConnection.Image = SeperateOptionChain.Properties.Resources.green;
+                    }
+                    else
+                    {
+                        //toolStripStatusLabelConnection.Image = SeperateOptionChain.Properties.Resources.red;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                //loger.Error(ex);
+            }
+        }
     }
     
 }

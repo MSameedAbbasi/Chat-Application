@@ -59,6 +59,7 @@ namespace chatproj
             /*stream.Close();
             clients.Close();*/
         }//name capital
+
         public void client_start(string sent_msg)
         {
             Console.WriteLine("client_start");
@@ -211,6 +212,9 @@ namespace chatproj
             port = 12000;
             clients = new TcpClient(localAddr.ToString(), port);
             stream = clients.GetStream();
+
+
+
             clientnamesend();
 
             //broadcastreceive();
