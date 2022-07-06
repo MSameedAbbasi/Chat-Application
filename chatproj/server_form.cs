@@ -53,7 +53,7 @@ namespace chatproj
             serverig1();
 
             string ordermsg = "";
-            //temp_order_sendto_ss(ordermsg);
+            //                                                                                          +++ +               temp_order_sendto_ss(ordermsg);
         }
         
         private void temp_order_sendto_ss(string ordermsg)
@@ -64,35 +64,27 @@ namespace chatproj
             //IPAddress os_IP = IPAddress.Parse("192.168.0.122");
             //IPAddress os_IP = IPAddress.Parse("204.93.141.72");
             IPAddress os_IP = IPAddress.Parse(arr2[0]); 
-            string ssl = arr2[2];
+            string ssl_string = arr2[2];
+            bool ssl = bool.Parse(ssl_string);
             //Int32 os_port = 3323;
             Int32 os_port = Int32.Parse(arr2[1]);
-
-            /*string str = "8=EXX.1.0#35=B2#553=DEMO_MASTER#1070=master-user1#52=09:50:34-06282022#1=10749#55=FB" +
+            
+            /*string str = "8=EXX.1.0#35=B2#553=DEMO_MASTER#1070=master-user1#52=11:50:34-07062022#1=10749#55=FB" +
                 "#54=1#38=100#40=2#1010=DEMO_MASTER#1004=T#44=10.02000#59=0#31=10.02#132=9.99" +
                 "#133=10.02#1121=1002#1139=XNAS#1074=20220628.10#58=MOBILE_ORDER_SENDING_APP#";*/
+            string str = "8=EXX.1.0#35=B2#1004=T#31=10.02#132=9.99#133=10.02#1121=1002#1139=XNAS#1074=20220628.10#52="+DateTime.Now.ToString("HH:mm:ss-MMddyyyy") +"#" +ordermsg; //datetime
 
-
-
-
-
-            /*os_client = new OSClientRMLH(null, this, os_IP.ToString(), os_port, ssl, "Heart_Beat_L2");
+            os_client = new OSClientRMLH(null, this, os_IP.ToString(), os_port,  ssl, "Heart_Beat_L2");
             os_client.StartInitialization();
-            
-            os_client.write(ordermsg);*/
-
-
+            os_client.write(str);
+            // ssl string to bool eer
 
 
 
             /*os_client = new TcpClient(os_IP.ToString(), os_port);
             os_stream = os_client.GetStream();
-            
-                 //processing
-
             StreamWriter writer = new StreamWriter(os_client.GetStream(), Encoding.ASCII);
             writer.WriteLine(str);
-
             Byte[] data = Encoding.ASCII.GetBytes(str);
             os_stream.Write(data, 0, data.Length);*/
 
@@ -243,14 +235,14 @@ namespace chatproj
             if (gotstr.Length>3 && gotstr.Substring(0, 3) == rcvrcode)
             {
                 
-                sendto = gotstr.Substring(3, 10);
+                sendto = gotstr.Substring(3, 20);
 
 
                 Console.WriteLine("7sendto) " + sendto);
                 st1 = sendto.ToString().TrimEnd();
                 Console.WriteLine("8sendto) " + st1+"<<");
                 
-                gotstr = gotstr.Substring(13);
+                gotstr = gotstr.Substring(23);
                 Console.WriteLine(gotstr);
             }
             return Tuple.Create(gotstr , st1);
@@ -378,12 +370,14 @@ namespace chatproj
 
         public void osClient_onMessage(string message)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("OS<<<msg ");
+            
         }
 
         public void osClient_OnConnectionError()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("OS<<<conerr " );
+            //throw new NotImplementedException();
         }
 
         public void Login()

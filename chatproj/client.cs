@@ -66,7 +66,7 @@ namespace chatproj
             string rcvrcode = "$%$";
             string sendernamestring = label2.Text;
             int lenght_of_sender_name=label2.Text.Length;
-            for (int i = 9+ lenght_of_sender_name; i < 19; i++)        //test it
+            for (int i =  lenght_of_sender_name; i < 20; i++)        //test it
             {
                 sendernamestring += " ";
             }
@@ -76,15 +76,11 @@ namespace chatproj
             
             Byte[] data = Encoding.ASCII.GetBytes(message);     //processing
             
-
-                                                   //send data
-            stream.Write(data, 0, data.Length);
+            stream.Write(data, 0, data.Length);                      //send data
             Console.WriteLine("\n Sent: {0}", message);
-
 
             data = new Byte[256];               // Receive the TcpServer.response.
             string responseData ;
-
 
             //responseData = strreader();         // Read the first batch of the TcpServer response bytes.
             Int32 bytes = stream.Read(data, 0, data.Length);        //process response
