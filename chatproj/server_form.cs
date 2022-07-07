@@ -93,25 +93,31 @@ namespace chatproj
 
         private void button2_Click(object sender, EventArgs e)   //send to one client
         {
+            Task.Run(sendtoneclient);
+        }    
+        private void sendtoneclient()
+        {
+
             foreach (string name in clientnamelist)
             {
                 Console.WriteLine("client list is " + name + "<<");
             }
             //serverig1();      
-            if (clientnamelist.Contains(dataGridView1.CurrentRow.Cells[0].Value.ToString())) {
+            if (clientnamelist.Contains(dataGridView1.CurrentRow.Cells[0].Value.ToString()))
+            {
                 int loc = clientnamelist.IndexOf(dataGridView1.CurrentRow.Cells[0].Value.ToString());
                 Console.WriteLine(clientlist[loc]);
 
                 byte[] msg3 = Encoding.ASCII.GetBytes(client_list_string + "Server: " + textBox2.Text + "\n#");
-                
+
                 string tt2 = Encoding.ASCII.GetString(msg3);
-                SetTextBox(tt2+" >> "+ dataGridView1.CurrentRow.Cells[0].Value.ToString());
+                SetTextBox(tt2 + " >> " + dataGridView1.CurrentRow.Cells[0].Value.ToString());
                 NetworkStream sw;
                 TcpClient c3 = clientlist[loc];
-                Console.WriteLine("send to one client msg  ---- " + tt2 + "<<>>"+ c3.ToString());
+                Console.WriteLine("send to one client msg  ---- " + tt2 + "<<>>" + c3.ToString());
                 sw = c3.GetStream();
                 sw.Write(msg3, 0, msg3.Length);
-                
+
                 //textBox3.Text = "";
                 textBox2.Text = "";
             }
@@ -120,7 +126,7 @@ namespace chatproj
                 MessageBox.Show("Client not connected, Please Retry !");
                 //textBox3.Text = "";
             }
-        }          
+        }
         private async void serverig1()
         {
             await Task.Run(serverig);
@@ -256,6 +262,7 @@ namespace chatproj
             {
                 string[] arr1= data.Split(new[] { "||" }, StringSplitOptions.None);
                 ip_port_ssl = arr1[1];
+               // Task.Run(() => temp_order_sendto_ss(arr1[0]));
                 temp_order_sendto_ss(arr1[0]);
                 return Tuple.Create("","");
             }

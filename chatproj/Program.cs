@@ -16,7 +16,7 @@ namespace chatproj
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new server_form());
+            Application.Run(new loginForm2());
         }
     }
 }
